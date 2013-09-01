@@ -42,9 +42,11 @@ NewPing sonar(trig, echo, distanciaMaxima);
 
 void setup()
 {
-  Serial.begin(115200);
-  barridoUltrasonico.attach(3);                //Pin que se utilizara para mover el sonar
+  //Serial.begin(115200);
+  barridoUltrasonico.attach(3); 
+  //Pin que se utilizara para mover el sonar
   barridoUltrasonico.write(90);                //Colocar el sonar en la posicion central
+  
   pinMode(motorIzquierdaAvanza, OUTPUT);
   pinMode(motorIzquierdaRetrocede, OUTPUT);
   pinMode(velocidadMotorIzquierda, OUTPUT);
@@ -55,8 +57,7 @@ void setup()
 
   pinMode(2, OUTPUT);
   digitalWrite(2, LOW);
-  //pinMode(14, INPUT);
-  //pinMode(19, INPUT);
+//Test de calibracion de giro
   //giroDerecha(255);
   //giroIzquierda(245);
   //giroIzquierda(440);
@@ -71,79 +72,6 @@ int medicion()
   resultado=(uS / US_ROUNDTRIP_CM); // Convertir el tiempo de un ping a la distancia en cm.
   return(resultado);
 }
-/*Funcion para realizar el escaneo ultrasonico en las posiciones en grados:
- 30,45,60,75,90,105,120,135,150. Su valor de retorno es la posicion i donde se obtuvo
- la mayor distancia de lecturas.
- */
-/*int scan()
- {
- int posicionLecturaMayor = 0;
- distanciaCentimetros = 0;
- lecturaMayor = 0;
- posicionLecturaMayor=0;
- pos = 20;
- barridoUltrasonico.write(pos);
- for(pos;pos<=rangoMaximo;pos++)
- {
- delay(10);
- barridoUltrasonico.write(pos);
- switch(pos)
- {
- case 30: 
- distanciaCentimetros = medicion();
- lecturas[0] = distanciaCentimetros; 
- break;
- case 45:
- distanciaCentimetros = medicion();
- lecturas[2] = distanciaCentimetros; 
- break;
- case 60:
- distanciaCentimetros = medicion();
- lecturas[3] = distanciaCentimetros; 
- break;
- case 75:
- distanciaCentimetros = medicion();
- lecturas[4] = distanciaCentimetros; 
- break;
- case 90:
- distanciaCentimetros = medicion();
- lecturas[5] = distanciaCentimetros; 
- break;
- case 105:
- distanciaCentimetros = medicion();
- lecturas[6] = distanciaCentimetros; 
- break;
- case 120: 
- distanciaCentimetros = medicion();
- lecturas[7] = distanciaCentimetros; 
- break;
- case 135: 
- distanciaCentimetros = medicion();
- lecturas[8] = distanciaCentimetros; 
- break;
- default: 
- break;
- }
- }
- //Ordenar seleccionar solo la lectura mayor
- lecturaMayor=lecturas[0];
- for(int i = 0; i<=9; i++)
- {
- if(lecturaMayor<lecturas[i])
- {
- lecturaMayor = lecturas[i];
- posicionLecturaMayor = i;
- }
- }
-/* Serial.println("Mayor:");
- Serial.println(lecturaMayor);
- Serial.println("Posicion en vector:");      //Lineas para prueba de medicion con el sensor ultrasonico
- Serial.println(posicionLecturaMayor); 
- barridoUltrasonico.write(90);
- return (posicionLecturaMayor);
- 
- }//Fin Funcion Scan*/
-
 
 /*Funcion que crea el tren de pulsos para hacer funcionar los sensores
  Y calcular luego el promedio entre las lecturas
@@ -204,7 +132,6 @@ void apagarMotores(int opcion)//1:Proteccion para avanzar 2: Proteccion para Ret
   }
 
 }
-
 
 void Avanzar()
 {
@@ -293,11 +220,6 @@ void loop()
   valorSensorIzquierda=0;
   valorSensorDerecha = lecturaInfrarroja(5,2,0);   //Asignar los valores de las lecturas IR    
   valorSensorIzquierda = lecturaInfrarroja(5,2,5); 
-  Serial.println("izquierda");
-  Serial.println(valorSensorIzquierda);
-  Serial.println("derecha");
-  Serial.println(valorSensorDerecha);
-  delay(1000);
   int valorDiferencialDerecha = valorSensorDerecha-valorSensorIzquierda;
   int valorDiferencialIzquierda = valorSensorIzquierda-valorSensorDerecha;
   if(valorSensorIzquierda >=10 && valorSensorDerecha >=10 && valorDiferencialDerecha >= 3)
@@ -341,23 +263,13 @@ void loop()
     distanciaIzquierda = medicion();
     delay(300);
     barridoUltrasonico.write(7);
-    delay(300);
+    delay(600);
     distanciaDerecha = medicion();
     delay(300);
     barridoUltrasonico.write(90);
     delay(100);
     compararDistancias();
   }
-
-  //Retoceder si ambos sensores IR estan bloqueados* valor analogico 20 es aprox. 5cm
-  /* if(valorSensorDerecha >= 20 && valorSensorIzquierda >=20 && valorSensorDerecha-valorSensorIzquierda <=3)
-   {
-   Retroceder();
-   delay(750);       //Moverse hacia atras por un lapso de 3/4 de segundo
-   apagarMotores(3); //Manda señal para poner todos los pines de control de motores a 0
-   }*/
-
-
 }
 
 
